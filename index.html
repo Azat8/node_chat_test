@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #chat {
+            width: 235px;
+            height: 300px;
+            border: 2px solid #ddd;
+            position: relative;
+        }
+        #chatForm {
+            position: absolute;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <h5 id="user"></h5>
+
+    <ul id="usernames"></ul>
+
+    <form action="" id="nameForm">
+        <input type="text" id="name">
+        <input type="submit">
+    </form>
+    <div id="chat">
+
+        <form action="" id="chatForm">
+            <input type="text">
+            <input type="submit" id="message">
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        $(document).ready(function(){
+            var $nameForm = $('#nameForm');
+            var $name = $('#name');
+            var $chatForm = $('#chatForm');
+            var $message = $('#message');
+            var $usernames = $('#usernames');
+            var $user = $('#user');
+
+            var socket = io.connect('http://localhost');
+
+            //........Username.............
+
+            $('#chat').hide();
+            $nameForm.submit(function(e){
+                e.preventDefault();
+                $(this).hide();
+                $('#chat').show();
+                $user.append($name.val());
+                socket.emit('username', {username: $name.val()});
+
+            });
+
+            socket.on('username response', function (data) {
+                console.log(data);
+               $usernames.append('<li>' + data.usernames.username + '</li>');
+            });
+
+            //............................
+
+            $chatForm.submit(function(e){
+                e.preventDefault();
+                console.log($name.val());
+
+
+
+                socket.emit('send message', {user: $name.val(), message: $message.val()})
+            });
+        });
+    </script>
+</body>
+</html>
