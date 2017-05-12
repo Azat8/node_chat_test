@@ -63,16 +63,22 @@
                $usernames.append('<li>' + data.usernames.username + '</li>');
             });
 
-            //............................
+            //..........Private message..........
 
             $chatForm.submit(function(e){
                 e.preventDefault();
                 console.log($name.val());
-
-
-
-                socket.emit('send message', {user: $name.val(), message: $message.val()})
+                socket.emit('send message', {user: $name.val(), message: $message.val(), to: 'user2'})
             });
+
+            socket.on('send message response', function (data) {
+                console.log(data.data.to);
+                console.log('user val' + $('#name').val());
+                if(data.data.to === $('#name').val()) {
+                    alert('Success' + $('#name').val());
+                }
+            });
+
         });
     </script>
 </body>

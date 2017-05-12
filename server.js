@@ -24,4 +24,8 @@ io.on('connection', function (socket) {
        usernames.push(data);
        socket.broadcast.emit('username response', {usernames: usernames[usernames.length-1] })
     });
+
+    socket.on('send message', function(data) {
+        socket.broadcast.emit('send message response', {data: data})
+    })
 });
